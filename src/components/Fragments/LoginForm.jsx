@@ -18,11 +18,6 @@ const LoginForm = () => {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    // const data = {
-    //   email: e.target.email.value,
-    //   password: e.target.password.value,
-    // };
-
     login(formData, (status, res) => {
       if (status) {
         localStorage.setItem("token", res);
