@@ -16,5 +16,3 @@ export const useLogin = () => {
 
   return username;
 };
-
-// getUser(token)
