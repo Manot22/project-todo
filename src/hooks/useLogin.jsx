@@ -1,18 +1,33 @@
 import { useEffect, useState } from "react";
-import { getUser } from "../services/auth.service";
+import { axiosInstance } from "../lib/axios";
 
 export const useLogin = () => {
-  const [username, setUsername] = useState("");
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const checkAuth = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setLoading(false);
+        window.location.href = "/";
+        return;
+      }
+      const { data } = await axiosInstance.get("/profile");
+      setUser(data.data);
+    } catch (error) {
+      console.error("Error get profile user", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setUsername(getUser(token));
-    } else {
-      window.location.href = "/";
-    }
-    setUsername(getUser(token));
+    checkAuth();
   }, []);
 
-  return username;
+  return {
+    user,
+    loading,
+  };
 };
