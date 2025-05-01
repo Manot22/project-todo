@@ -31,7 +31,9 @@ const LoginForm = () => {
   return (
     <form className="space-y-2" onSubmit={handleLogin}>
       {loginFailed && (
-        <p className="text-red-500 capitalize text-center">{loginFailed}</p>
+        <p className="bg-red-300 text-black capitalize text-center rounded-lg">
+          {loginFailed}
+        </p>
       )}
       <InputForm
         titleLable="E-mail"
