@@ -62,7 +62,15 @@ const Dashboard = () => {
           ))}
         </CardTask>
       ) : (
-        <p>Tidak ada Task</p>
+        <div>
+          <CardTask
+            mainTitle="Today"
+            buttonName="Add New Task"
+            onClick={handleOpenModal}
+          >
+            <div>Tidak Ada task</div>
+          </CardTask>
+        </div>
       )}
 
       <TaskModalLayouts
