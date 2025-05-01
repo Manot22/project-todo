@@ -2,14 +2,20 @@ import { format } from "date-fns";
 import idLocale from "date-fns/locale/id";
 
 const CardTask = (props) => {
-  const { mainTitle, children } = props;
+  const { mainTitle, children, buttonName, onClick } = props;
 
   return (
     <div className="bg-white py-24 sm:py-32">
-      <div className="max-w-2xl mx-6">
+      <div className="flex justify-between items-center mx-6">
         <h2 className="text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
           {mainTitle}
         </h2>
+        <button
+          className="bg-black rounded-md text-white px-4 py-1"
+          onClick={onClick}
+        >
+          {buttonName}
+        </button>
       </div>
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">

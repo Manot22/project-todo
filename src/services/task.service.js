@@ -23,3 +23,15 @@ export const getTaskUser = (userId, callback) => {
       console.log(error);
     });
 };
+
+export const createNewTask = (data, callback) => {
+  axios
+    .post("http://localhost:9000/api/v1/task", data)
+    .then((res) => {
+      console.log(res.data);
+      callback(true, res.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
