@@ -5,7 +5,7 @@ const InputForm = (props) => {
   const { htmlFor, titleLable, placeholder, type, value, name, onChange } =
     props;
   return (
-    <>
+    <div className="mb-4">
       <Label htmlFor={htmlFor}>{titleLable}</Label>
       <Input
         name={name}
@@ -14,7 +14,7 @@ const InputForm = (props) => {
         value={value}
         onChange={onChange}
       />
-    </>
+    </div>
   );
 };
 export default InputForm;
