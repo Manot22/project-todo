@@ -4,7 +4,7 @@ const AuthLayouts = (props) => {
   const { children, type, titleLayout } = props;
   return (
     <div className="min-h-screen flex flex-col justify-center items-center">
-      <div className="p-8 max-w-sm mx-auto border border-gray-200 rounded-lg">
+      <div className="p-8 max-w-md mx-auto rounded-lg">
         <div className="mb-4">
           <h1 className="text-center font-semibold text-xl">{titleLayout}</h1>
           <p className="text-gray-500 text-sm text-center">

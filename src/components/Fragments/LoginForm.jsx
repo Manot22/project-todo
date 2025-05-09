@@ -52,7 +52,10 @@ const LoginForm = () => {
         placeholder="*****"
       />
 
-      <Button type="submit" classname="bg-blue-500 my-2 hover:bg-blue-300">
+      <Button
+        type="submit"
+        classname="bg-blue-500 my-2 hover:bg-blue-300 w-full"
+      >
         Sign in
       </Button>
     </form>
