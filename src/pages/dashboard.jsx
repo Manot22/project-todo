@@ -4,6 +4,7 @@ import { useLogin } from "../hooks/useLogin";
 import { getTaskUser } from "../services/task.service";
 import TaskModalLayouts from "../components/Layouts/TaskModalLayouts";
 import TaskCreateForm from "../components/Fragments/TaskCreateForm";
+import TaskUpadateForm from "../components/Fragments/TaskUpadateForm";
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
@@ -46,7 +47,7 @@ const Dashboard = () => {
         >
           {tasks.map((item) => (
             <article
-              className="flex max-w-xl flex-col items-start justify-between"
+              className="flex max-w-xl flex-col items-start justify-between bg-gray-100 p-8 rounded-md"
               key={item.id}
             >
               <CardTask.Header
@@ -57,7 +58,7 @@ const Dashboard = () => {
                 title={item.title}
                 description={item.description}
               />
-              <CardTask.Footer username={item.user.name} />
+              <CardTask.Footer onClick={handleOpenModal} />
             </article>
           ))}
         </CardTask>
@@ -82,6 +83,14 @@ const Dashboard = () => {
           onTaskAdded={handleTaskAdded}
           onClose={handleCloseModal}
         />
+      </TaskModalLayouts>
+
+      <TaskModalLayouts
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        titleForm="Form update Task"
+      >
+        <TaskUpadateForm onClose={handleCloseModal} />
       </TaskModalLayouts>
     </div>
   );
