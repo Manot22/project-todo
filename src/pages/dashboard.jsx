@@ -5,11 +5,14 @@ import { getTaskUser } from "../services/task.service";
 import TaskModalLayouts from "../components/Layouts/TaskModalLayouts";
 import TaskCreateForm from "../components/Fragments/TaskCreateForm";
 import TaskUpadateForm from "../components/Fragments/TaskUpadateForm";
+import TaskUpdateForm from "../components/Fragments/TaskUpadateForm";
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
   const { user, loading } = useLogin();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState("create");
+  const [editingTaskId, setEditingTaskId] = useState(null);
 
   useEffect(() => {
     if (user && user.id) {
@@ -27,6 +30,12 @@ const Dashboard = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+
+  const handleOpenEditModal = (taskId) => {
+    setModalMode("edit");
+    setEditingTaskId(taskId);
+    setIsModalOpen(true);
   };
 
   const handleTaskAdded = (newTask) => {
@@ -58,7 +67,7 @@ const Dashboard = () => {
                 title={item.title}
                 description={item.description}
               />
-              <CardTask.Footer onClick={handleOpenModal} />
+              <CardTask.Footer onClick={() => handleOpenEditModal(item.id)} />
             </article>
           ))}
         </CardTask>
@@ -77,20 +86,29 @@ const Dashboard = () => {
       <TaskModalLayouts
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        titleForm="Form new Task"
+        titleForm={
+          modalMode === "create" ? "Form New Task" : "Form Update Task"
+        }
       >
-        <TaskCreateForm
-          onTaskAdded={handleTaskAdded}
-          onClose={handleCloseModal}
-        />
-      </TaskModalLayouts>
-
-      <TaskModalLayouts
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        titleForm="Form update Task"
-      >
-        <TaskUpadateForm onClose={handleCloseModal} />
+        {modalMode === "create" ? (
+          <TaskCreateForm
+            onTaskAdded={handleTaskAdded}
+            onClose={handleCloseModal}
+          />
+        ) : (
+          <TaskUpdateForm
+            taskId={editingTaskId}
+            onClose={handleCloseModal}
+            onTaskUpdated={(updatedTask) => {
+              setTasks((prev) =>
+                prev.map((task) =>
+                  task.id === updatedTask.data.id ? updatedTask.data : task
+                )
+              );
+              handleCloseModal();
+            }}
+          />
+        )}
       </TaskModalLayouts>
     </div>
   );
