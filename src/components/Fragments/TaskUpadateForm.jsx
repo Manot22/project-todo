@@ -1,24 +1,31 @@
 import { useEffect, useState } from "react";
 import { getTaskById, updateTask } from "../../services/task.service";
-import { useParams } from "react-router-dom";
 import InputForm from "../Elements/Input";
 import Button from "../Elements/Button";
 
-const TaskUpadateForm = (onClose, onTaskUpdated) => {
-  const { id } = useParams();
-  const [taskById, setTaskById] = useState({});
+const TaskUpdateForm = ({ onClose, onTaskUpdated, taskId }) => {
+  const [taskById, setTaskById] = useState(null);
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    dueDate: new Date().toISOString(),
+  });
 
   useEffect(() => {
-    getTaskById(id, (data) => {
-      setTaskById(data);
-    });
-  }, [id]);
-
-  const [formData, setFormData] = useState({
-    title: taskById.title,
-    description: taskById.description,
-    dueDate: taskById.dueDate,
-  });
+    if (taskId) {
+      getTaskById(taskId, (data) => {
+        if (data && data.data) {
+          const task = data.data;
+          setTaskById(task);
+          setFormData({
+            title: task.title || "",
+            description: task.description || "",
+            dueDate: task.dueDate?.split("T")[0] || "",
+          });
+        }
+      });
+    }
+  }, [taskId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,23 +36,25 @@ const TaskUpadateForm = (onClose, onTaskUpdated) => {
   };
 
   const handleSubmit = (e) => {
-    e.prevenDefault();
+    e.preventDefault();
 
-    updateTask(id, formData, (status, data) => {
+    updateTask(taskId, formData, (status, data) => {
       if (status) {
-        onTaskUpdated(data);
+        onTaskUpdated?.(data);
         setFormData({
           title: "",
           description: "",
-          dueDate: "",
+          dueDate: new Date().toISOString(),
         });
-        onClose();
+        onClose?.();
       }
     });
   };
 
+  if (!taskById) return <div>Loading task...</div>;
+
   return (
-    <form action="" onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <InputForm
         titleLabel="Title"
         name="title"
@@ -83,4 +92,5 @@ const TaskUpadateForm = (onClose, onTaskUpdated) => {
     </form>
   );
 };
-export default TaskUpadateForm;
+
+export default TaskUpdateForm;
