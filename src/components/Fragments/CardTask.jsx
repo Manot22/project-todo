@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import idLocale from "date-fns/locale/id";
+import Button from "../Elements/Button";
 
 const CardTask = (props) => {
   const { mainTitle, children, buttonName, onClick } = props;
@@ -17,8 +18,8 @@ const CardTask = (props) => {
           {buttonName}
         </button>
       </div>
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8 ">
+        <div className="mx-auto mt-10 grid max-w-2xl  grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
           {children}
         </div>
       </div>
@@ -29,7 +30,7 @@ const CardTask = (props) => {
 const Header = (props) => {
   const { dueDate, isCompleted } = props;
   return (
-    <div className="flex justify-between w-full items-center gap-x-4 text-xs">
+    <div className="flex justify-between w-full items-center gap-x-4 text-xs ">
       <time className="text-gray-500 ">
         {format(new Date(dueDate), "dd MMMM yyyy", {
           locale: idLocale,
@@ -67,17 +68,13 @@ const Content = (props) => {
 };
 
 const Footer = (props) => {
-  const { username } = props;
+  const { onClick } = props;
   return (
-    <div className="relative mt-8 flex items-center gap-x-4">
-      <div className="text-sm/6">
-        <p className="capitalize font-semibold text-gray-900">
-          <a>
-            <span className="absolute inset-0" />
-            {username}
-          </a>
-        </p>
-      </div>
+    <div className="flex justify-end items-center w-full gap-2 my-4">
+      <Button classname="bg-blue-500 text-sm" onClick={onClick}>
+        Edit
+      </Button>
+      <Button classname="bg-red-500 text-sm">Delete</Button>
     </div>
   );
 };
