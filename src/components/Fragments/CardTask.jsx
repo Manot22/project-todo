@@ -68,13 +68,15 @@ const Content = (props) => {
 };
 
 const Footer = (props) => {
-  const { onClick } = props;
+  const { onClick, onClickDelete } = props;
   return (
     <div className="flex justify-end items-center w-full gap-2 my-4">
       <Button classname="bg-blue-500 text-sm" onClick={onClick}>
         Edit
       </Button>
-      <Button classname="bg-red-500 text-sm">Delete</Button>
+      <Button classname="bg-red-500 text-sm" onClick={onClickDelete}>
+        Delete
+      </Button>
     </div>
   );
 };

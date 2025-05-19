@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import CardTask from "../components/Fragments/CardTask";
 import { useLogin } from "../hooks/useLogin";
-import { getTaskUser } from "../services/task.service";
+import { deleteTask, getTaskUser } from "../services/task.service";
 import TaskModalLayouts from "../components/Layouts/TaskModalLayouts";
 import TaskCreateForm from "../components/Fragments/TaskCreateForm";
 import TaskUpdateForm from "../components/Fragments/TaskUpadateForm";
@@ -41,6 +41,17 @@ const Dashboard = () => {
     setTasks((prevTask) => [...prevTask, newTask]);
   };
 
+  const handleDeleteTask = (taskId) => {
+    if (confirm("Apakah kamu yakin ingin menghapus task ini?") ) {
+ deleteTask(taskId, (success) => {
+        if (success) {
+          setTasks((prev) => prev.filter((task) => task.id !== taskId));
+        }
+      });
+    }
+     
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -66,7 +77,10 @@ const Dashboard = () => {
                 title={item.title}
                 description={item.description}
               />
-              <CardTask.Footer onClick={() => handleOpenEditModal(item.id)} />
+              <CardTask.Footer
+                onClick={() => handleOpenEditModal(item.id)}
+                onClickDelete={() => handleDeleteTask(item.id)}
+              />
             </article>
           ))}
         </CardTask>
