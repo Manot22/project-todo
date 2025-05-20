@@ -116,8 +116,8 @@ const Dashboard = () => {
                 ))}
               </div>
             ) : (
-              <div className="bg-white rounded-lg shadow p-6 text-center">
-                <p className="text-gray-500">No pending tasks</p>
+              <div className="bg-black/50 backdrop-blur-md  rounded-lg shadow p-6 text-center">
+                <p className="text-gray-200">No pending tasks</p>
               </div>
             )}
           </section>
@@ -141,8 +141,8 @@ const Dashboard = () => {
                 ))}
               </div>
             ) : (
-              <div className="bg-white rounded-lg shadow p-6 text-center">
-                <p className="text-gray-500">No completed tasks</p>
+              <div className="bg-black/50 backdrop-blur-md rounded-lg shadow p-6 text-center">
+                <p className="text-gray-200">No completed tasks</p>
               </div>
             )}
           </section>

@@ -3,10 +3,10 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleComplete, formatDate }) => {
 
   return (
     <div
-      className={`bg-white rounded-lg shadow overflow-hidden transition-all hover:shadow-md ${
+      className={`bg-black/50 backdrop-blur-md rounded-lg shadow overflow-hidden transition-all hover:shadow-md ${
         task.isCompleted
-          ? "border-l-4 border-green-500"
-          : "border-l-4 border-indigo-500"
+          ? "border-l-4 border-green-700"
+          : "border-l-4 border-indigo-700"
       }`}
     >
       <div className="p-5 flex flex-col h-full">
@@ -16,7 +16,7 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleComplete, formatDate }) => {
               onClick={onToggleComplete}
               className={`w-5 h-5 rounded-full border flex-shrink-0 ${
                 task.isCompleted
-                  ? "bg-green-500 border-green-500"
+                  ? "bg-green-700 border-green-700"
                   : "border-gray-300"
               }`}
             >
@@ -37,8 +37,8 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleComplete, formatDate }) => {
             <h3
               className={`ml-2 text-lg font-medium capitalize ${
                 task.isCompleted
-                  ? "text-gray-500 line-through"
-                  : "text-gray-900"
+                  ? "text-gray-200 line-through"
+                  : "text-gray-200"
               }`}
             >
               {task.title}
@@ -50,7 +50,7 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleComplete, formatDate }) => {
               className="p-1 rounded-full hover:bg-gray-100 transition-colors"
             >
               <svg
-                className="w-5 h-5 text-gray-500"
+                className="w-5 h-5 text-gray-200"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -68,7 +68,7 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleComplete, formatDate }) => {
               className="p-1 rounded-full hover:bg-gray-100 transition-colors"
             >
               <svg
-                className="w-5 h-5 text-gray-500"
+                className="w-5 h-5 text-gray-200"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -86,7 +86,7 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleComplete, formatDate }) => {
 
         <p
           className={`text-sm mb-4 flex-grow capitalize ${
-            task.isCompleted ? "text-gray-400" : "text-gray-600"
+            task.isCompleted ? "text-gray-200" : "text-gray-200"
           }`}
         >
           {task.description || "No description provided"}
@@ -94,7 +94,7 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleComplete, formatDate }) => {
 
         <div className="mt-2 flex items-center text-sm">
           <svg
-            className="w-4 h-4 mr-1 text-gray-500"
+            className="w-4 h-4 mr-1 text-gray-200"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -108,11 +108,11 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleComplete, formatDate }) => {
           </svg>
           <span
             className={`
-            ${task.isCompleted ? "text-gray-500" : ""}
+            ${task.isCompleted ? "text-gray-200" : ""}
             ${
               isOverdue && !task.isCompleted
                 ? "text-red-600 font-medium"
-                : "text-gray-500"
+                : "text-gray-200"
             }`}
           >
             {formatDate(task.dueDate)}
