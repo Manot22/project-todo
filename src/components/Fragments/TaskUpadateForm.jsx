@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { getTaskById, updateTask } from "../../services/task.service";
-import InputForm from "../Elements/Input";
 import Button from "../Elements/Button";
 
-const TaskUpdateForm = ({ onClose, onTaskUpdated, taskId }) => {
-  const [taskById, setTaskById] = useState(null);
+const TaskUpdateForm = ({ taskId, onClose, onTaskUpdated }) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     dueDate: new Date().toISOString(),
+    priority: "",
+    isCompleted: false,
   });
 
   useEffect(() => {
@@ -16,11 +16,12 @@ const TaskUpdateForm = ({ onClose, onTaskUpdated, taskId }) => {
       getTaskById(taskId, (data) => {
         if (data && data.data) {
           const task = data.data;
-          setTaskById(task);
+          setFormData(task);
           setFormData({
             title: task.title || "",
             description: task.description || "",
             dueDate: task.dueDate?.split("T")[0] || "",
+            priority: task.priority || "",
           });
         }
       });
@@ -28,73 +29,110 @@ const TaskUpdateForm = ({ onClose, onTaskUpdated, taskId }) => {
   }, [taskId]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    updateTask(taskId, formData, (status, data) => {
-      if (status) {
-        onTaskUpdated?.(data);
-        setFormData({
-          title: "",
-          description: "",
-          dueDate: new Date().toISOString(),
-        });
-        onClose?.();
+    updateTask(taskId, formData, (success, data) => {
+      if (success) {
+        onTaskUpdated(data);
+        onClose();
       }
     });
   };
 
-  if (!taskById) return <div>Loading task...</div>;
-
   return (
-    <form onSubmit={handleSubmit}>
-      <InputForm
-        titleLabel="Title"
-        name="title"
-        type="text"
-        placeholder="Judul task"
-        value={formData.title}
-        onChange={handleChange}
-      />
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Deskripsi
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label
+          htmlFor="title"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Title
+        </label>
+        <input
+          type="text"
+          name="title"
+          id="title"
+          value={formData.title}
+          onChange={handleChange}
+          required
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+        />
+      </div>
+
+      <div>
+        <label
+          htmlFor="description"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Description
         </label>
         <textarea
           name="description"
-          value={formData.description}
+          id="description"
+          rows={3}
+          value={formData.description || ""}
           onChange={handleChange}
-          rows="3"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
         />
       </div>
-      <InputForm
-        titleLabel="Tenggat Waktu"
-        name="dueDate"
-        type="date"
-        value={formData.dueDate}
-        onChange={handleChange}
-      />
 
-      <div className="flex gap-x-2 ">
-        <Button
-          classname="w-full mr-2 px-4 py-2 text-sm font-medium  bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none"
-          onClick={onClose}
+      <div>
+        <label
+          htmlFor="dueDate"
+          className="block text-sm font-medium text-gray-700"
         >
-          Close
+          Due Date
+        </label>
+        <input
+          type="date"
+          name="dueDate"
+          id="dueDate"
+          value={formData.dueDate || ""}
+          onChange={handleChange}
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+        />
+      </div>
+
+      <div>
+        <label
+          htmlFor="priority"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Priority
+        </label>
+        <select
+          name="priority"
+          id="priority"
+          value={formData.priority || "Normal"}
+          onChange={handleChange}
+          className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 rounded-md"
+        >
+          <option value="Low">Low</option>
+          <option value="Normal">Normal</option>
+          <option value="High">High</option>
+          <option value="Urgent">Urgent</option>
+        </select>
+      </div>
+
+      <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+        <Button
+          onClick={onClose}
+          classname="bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+        >
+          Cancel
         </Button>
         <Button
-          classname="w-full px-4 py-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md hover:bg--800 focus:outline-none"
           type="submit"
+          classname="bg-purple-600 text-white hover:bg-purple-700"
         >
-          Update
+          Update Task
         </Button>
       </div>
     </form>
