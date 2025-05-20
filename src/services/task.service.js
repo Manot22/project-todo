@@ -37,7 +37,7 @@ export const createNewTask = (data, callback) => {
   axios
     .post("http://localhost:9000/api/v1/task", data)
     .then((res) => {
-      callback(true, res.data);
+      callback(true, res.data.data);
     })
     .catch((error) => {
       console.log(error);

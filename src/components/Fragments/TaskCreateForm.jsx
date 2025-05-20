@@ -36,7 +36,6 @@ const TaskCreateForm = ({ onTaskAdded, onClose }) => {
     createNewTask(formData, (success, data) => {
       if (success) {
         onTaskAdded?.(data);
-        window.location.href = "/dashboard";
         setFormData({
           title: "",
           description: "",
