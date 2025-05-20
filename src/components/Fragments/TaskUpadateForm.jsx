@@ -83,11 +83,19 @@ const TaskUpdateForm = ({ onClose, onTaskUpdated, taskId }) => {
         onChange={handleChange}
       />
 
-      <div className="flex gap-x-2">
-        <Button type="button" onClick={onClose}>
+      <div className="flex gap-x-2 ">
+        <Button
+          classname="w-full mr-2 px-4 py-2 text-sm font-medium  bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none"
+          onClick={onClose}
+        >
           Close
         </Button>
-        <Button type="submit">Update</Button>
+        <Button
+          classname="w-full px-4 py-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md hover:bg--800 focus:outline-none"
+          type="submit"
+        >
+          Update
+        </Button>
       </div>
     </form>
   );

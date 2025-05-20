@@ -35,7 +35,7 @@ const TaskCreateForm = ({ onTaskAdded, onClose }) => {
 
     createNewTask(formData, (success, data) => {
       if (success) {
-        onTaskAdded(data);
+        onTaskAdded?.(data);
         window.location.href = "/dashboard";
         setFormData({
           title: "",
@@ -43,7 +43,7 @@ const TaskCreateForm = ({ onTaskAdded, onClose }) => {
           dueDate: new Date().toISOString(),
           isCompleted: false,
         });
-        onClose();
+        onClose?.();
       }
     });
   };
@@ -90,17 +90,17 @@ const TaskCreateForm = ({ onTaskAdded, onClose }) => {
         />
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex">
         <button
           type="button"
           onClick={onClose}
-          className="mr-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none"
+          className="w-full mr-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none"
         >
           Batal
         </button>
         <button
           type="submit"
-          className="px-4 py-2 text-sm font-medium text-white bg-black border border-transparent rounded-md hover:bg-gray-800 focus:outline-none"
+          className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md hover:bg-blue-800 focus:outline-none"
         >
           Simpan
         </button>

@@ -9,7 +9,7 @@ const Button = (props) => {
     <button
       type={type}
       onClick={onClick}
-      className={`px-4 py-1 cursor-pointer rounded-lg ${classname} text-white`}
+      className={`px-4 py-1 cursor-pointer rounded-lg ${classname} `}
     >
       {children}
     </button>
