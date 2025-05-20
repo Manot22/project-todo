@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
 import { useLogin } from "../hooks/useLogin";
 import { deleteTask, getTaskUser, updateTask } from "../services/task.service";
+import { getTagByUserId } from "../services/tag.service";
 import HeaderDashboard from "../components/Layouts/HeaderDashboard";
 import TaskCard from "../components/Fragments/TaskCard";
 import TaskModalLayouts from "../components/Layouts/TaskModalLayouts";
 import TaskCreateForm from "../components/Fragments/TaskCreateForm";
 import TaskUpdateForm from "../components/Fragments/TaskUpadateForm";
+import TagManagement from "../components/Fragments/TagManagement";
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [filteredTasks, setFilteredTasks] = useState([]);
+  const [activeTagFilter, setActiveTagFilter] = useState(null);
   const { user, loading } = useLogin();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("create");
@@ -19,10 +24,35 @@ const Dashboard = () => {
       getTaskUser(user.id, (success, data) => {
         if (success) {
           setTasks(data);
+          setFilteredTasks(data);
         }
       });
     }
   }, [user]);
+
+  useEffect(() => {
+    if (user && user.id) {
+      getTagByUserId(user.id, (success, data) => {
+        if (success) {
+          setTags(data);
+        }
+      });
+    }
+  }, [user]);
+
+  // Filter tasks when activeTagFilter changes
+  useEffect(() => {
+    if (activeTagFilter === null) {
+      setFilteredTasks(tasks);
+    } else {
+      const filtered = tasks.filter(
+        (task) =>
+          task.tagId === activeTagFilter ||
+          (task.tags && task.tags.some((tag) => tag.id === activeTagFilter))
+      );
+      setFilteredTasks(filtered);
+    }
+  }, [activeTagFilter, tasks]);
 
   const handleOpenModal = () => {
     setModalMode("create");
@@ -45,8 +75,16 @@ const Dashboard = () => {
     handleCloseModal();
   };
 
+  const handleTagAdded = (newTag) => {
+    setTags((prevTag) => [...prevTag, newTag]);
+  };
+
+  const handleTagsUpdate = (updatedTags) => {
+    setTags(updatedTags);
+  };
+
   const handleDeleteTask = (taskId) => {
-    if (window.confirm("Apakah kamu yakin ingin menghapus task ini?")) {
+    if (window.confirm("Are you sure you want to delete this task?")) {
       deleteTask(taskId, (success) => {
         if (success) {
           setTasks((prev) => prev.filter((task) => task.id !== taskId));
@@ -68,8 +106,16 @@ const Dashboard = () => {
     });
   };
 
-  const tasksPending = tasks.filter((task) => !task.isCompleted);
-  const completedTasks = tasks.filter((task) => task.isCompleted);
+  const handleClearTagFilter = () => {
+    setActiveTagFilter(null);
+  };
+
+  const handleSetTagFilter = (tagId) => {
+    setActiveTagFilter(tagId);
+  };
+
+  const tasksPending = filteredTasks.filter((task) => !task.isCompleted);
+  const completedTasks = filteredTasks.filter((task) => task.isCompleted);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -81,7 +127,11 @@ const Dashboard = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+      </div>
+    );
   }
 
   return (
@@ -94,10 +144,42 @@ const Dashboard = () => {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
+          {/* Tag Management Section */}
+          <TagManagement
+            tags={tags}
+            onAddTag={handleTagAdded}
+            onTagsUpdate={handleTagsUpdate}
+          />
+
+          {/* Active Tag Filter Indicator */}
+          {activeTagFilter && (
+            <div className="bg-purple-50 rounded-lg p-3 flex items-center justify-between">
+              <div className="flex items-center">
+                <span className="font-medium text-purple-800">
+                  Filtering by tag:{" "}
+                  {tags.find((t) => t.id === activeTagFilter)?.name ||
+                    "Unknown Tag"}
+                </span>
+              </div>
+              <button
+                onClick={handleClearTagFilter}
+                className="text-sm text-purple-700 hover:text-purple-900 font-medium"
+              >
+                Clear Filter
+              </button>
+            </div>
+          )}
+
+          {/* Pending Tasks Section */}
           <section>
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
               <span className="w-2 h-6 bg-yellow-500 rounded mr-2"></span>
               Pending Tasks
+              {activeTagFilter && (
+                <span className="ml-2 text-sm text-gray-500">
+                  ({tasksPending.length})
+                </span>
+              )}
             </h2>
             {tasksPending.length > 0 ? (
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -109,20 +191,30 @@ const Dashboard = () => {
                     onDelete={() => handleDeleteTask(task.id)}
                     onToggleComplete={() => handleToggleComplete(task.id)}
                     formatDate={formatDate}
+                    onTagClick={handleSetTagFilter}
+                    tags={tags}
                   />
                 ))}
               </div>
             ) : (
               <div className="bg-white rounded-lg shadow p-6 text-center">
-                <p className="text-gray-500">No pending tasks</p>
+                <p className="text-gray-500">
+                  No pending tasks{activeTagFilter ? " with this tag" : ""}
+                </p>
               </div>
             )}
           </section>
 
+          {/* Completed Tasks Section */}
           <section>
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
               <span className="w-2 h-6 bg-green-500 rounded mr-2"></span>
               Completed Tasks
+              {activeTagFilter && (
+                <span className="ml-2 text-sm text-gray-500">
+                  ({completedTasks.length})
+                </span>
+              )}
             </h2>
             {completedTasks.length > 0 ? (
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -134,12 +226,16 @@ const Dashboard = () => {
                     onDelete={() => handleDeleteTask(task.id)}
                     onToggleComplete={() => handleToggleComplete(task.id)}
                     formatDate={formatDate}
+                    onTagClick={handleSetTagFilter}
+                    tags={tags}
                   />
                 ))}
               </div>
             ) : (
               <div className="bg-white rounded-lg shadow p-6 text-center">
-                <p className="text-gray-500">No completed tasks</p>
+                <p className="text-gray-500">
+                  No completed tasks{activeTagFilter ? " with this tag" : ""}
+                </p>
               </div>
             )}
           </section>
@@ -157,11 +253,13 @@ const Dashboard = () => {
           <TaskCreateForm
             onTaskAdded={handleTaskAdded}
             onClose={handleCloseModal}
+            availableTags={tags}
           />
         ) : (
           <TaskUpdateForm
             taskId={editingTaskId}
             onClose={handleCloseModal}
+            availableTags={tags}
             onTaskUpdated={(updatedTask) => {
               setTasks((prev) =>
                 prev.map((task) =>

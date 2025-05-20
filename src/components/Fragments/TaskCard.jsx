@@ -1,39 +1,54 @@
-const TaskCard = ({ task, onEdit, onDelete, onToggleComplete, formatDate }) => {
-  const isOverdue = !task.isCompleted && new Date(task.dueDate) < new Date();
+import { X, Edit, Check } from "lucide-react";
+
+const TaskCard = ({
+  task,
+  onEdit,
+  onDelete,
+  onToggleComplete,
+  formatDate,
+  onTagClick,
+  tags = [],
+}) => {
+  const taskTags = task.tagIds
+    ? task.tagIds
+        .map((tagId) => tags.find((tag) => tag.id === tagId))
+        .filter(Boolean)
+    : task.tagId
+    ? [tags.find((tag) => tag.id === task.tagId)].filter(Boolean)
+    : [];
+
+  const getTagColor = (tagId) => {
+    const colorClasses = [
+      "bg-blue-100 text-blue-800 border-blue-300",
+      "bg-green-100 text-green-800 border-green-300",
+      "bg-yellow-100 text-yellow-800 border-yellow-300",
+      "bg-purple-100 text-purple-800 border-purple-300",
+      "bg-pink-100 text-pink-800 border-pink-300",
+      "bg-indigo-100 text-indigo-800 border-indigo-300",
+      "bg-red-100 text-red-800 border-red-300",
+      "bg-orange-100 text-orange-800 border-orange-300",
+    ];
+
+    const colorIndex = tagId % colorClasses.length;
+    return colorClasses[colorIndex];
+  };
 
   return (
     <div
-      className={`bg-white rounded-lg shadow overflow-hidden transition-all hover:shadow-md ${
-        task.isCompleted
-          ? "border-l-4 border-green-500"
-          : "border-l-4 border-indigo-500"
+      className={`bg-white rounded-lg shadow overflow-hidden border-l-4 ${
+        task.isCompleted ? "border-green-500" : "border-yellow-500"
       }`}
     >
-      <div className="p-5 flex flex-col h-full">
-        <div className="flex justify-between items-start mb-3">
+      {/* Card Header */}
+      <div className="p-4">
+        <div className="flex justify-between items-start">
           <div className="flex items-center">
-            <button
-              onClick={onToggleComplete}
-              className={`w-5 h-5 rounded-full border flex-shrink-0 ${
-                task.isCompleted
-                  ? "bg-green-500 border-green-500"
-                  : "border-gray-300"
-              }`}
-            >
-              {task.isCompleted && (
-                <svg
-                  className="w-5 h-5 text-white"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              )}
-            </button>
+            <input
+              type="checkbox"
+              checked={task.isCompleted}
+              onChange={onToggleComplete}
+              className="h-5 w-5 text-purple-600 rounded focus:ring-purple-500"
+            />
             <h3
               className={`ml-2 text-lg font-medium capitalize ${
                 task.isCompleted
@@ -44,81 +59,60 @@ const TaskCard = ({ task, onEdit, onDelete, onToggleComplete, formatDate }) => {
               {task.title}
             </h3>
           </div>
-          <div className="flex items-center space-x-1">
+          <div className="flex space-x-1">
             <button
               onClick={onEdit}
-              className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+              className="p-1 text-gray-500 hover:text-gray-700 transition-colors"
             >
-              <svg
-                className="w-5 h-5 text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                />
-              </svg>
+              <Edit className="w-4 h-4" />
             </button>
             <button
               onClick={onDelete}
-              className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+              className="p-1 text-gray-500 hover:text-red-600 transition-colors"
             >
-              <svg
-                className="w-5 h-5 text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                />
-              </svg>
+              <X className="w-4 h-4" />
             </button>
           </div>
         </div>
+      </div>
 
+      {/* Card Body */}
+      <div className="px-4 py-2">
         <p
-          className={`text-sm mb-4 flex-grow capitalize ${
-            task.isCompleted ? "text-gray-400" : "text-gray-600"
+          className={`text-sm capitalize ${
+            task.isCompleted ? "text-gray-500" : "text-gray-700"
           }`}
         >
           {task.description || "No description provided"}
         </p>
+      </div>
 
-        <div className="mt-2 flex items-center text-sm">
-          <svg
-            className="w-4 h-4 mr-1 text-gray-500"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-            />
-          </svg>
-          <span
-            className={`
-            ${task.isCompleted ? "text-gray-500" : ""}
-            ${
-              isOverdue && !task.isCompleted
-                ? "text-red-600 font-medium"
-                : "text-gray-500"
-            }`}
-          >
-            {formatDate(task.dueDate)}
-            {isOverdue && !task.isCompleted && " (Overdue)"}
-          </span>
+      {/* Tags Section */}
+      {taskTags.length > 0 && (
+        <div className="px-4 py-2 border-t border-gray-100">
+          <div className="flex flex-wrap gap-1">
+            {taskTags.map(
+              (tag) =>
+                tag && (
+                  <span
+                    key={tag.id}
+                    onClick={() => onTagClick && onTagClick(tag.id)}
+                    className={`cursor-pointer inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getTagColor(
+                      tag.id
+                    )}`}
+                  >
+                    {tag.name}
+                  </span>
+                )
+            )}
+          </div>
         </div>
+      )}
+
+      {/* Card Footer */}
+      <div className="px-4 py-2 bg-gray-50 text-xs text-gray-500 flex justify-between items-center">
+        <span>Due: {task.dueDate ? formatDate(task.dueDate) : "Not set"}</span>
+        <span>Priority: {task.priority || "Normal"}</span>
       </div>
     </div>
   );
