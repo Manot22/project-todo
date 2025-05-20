@@ -98,8 +98,8 @@ const Dashboard = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-              <span className="w-2 h-6 bg-yellow-500 rounded mr-2"></span>
+            <h2 className="text-xl w-fit font-semibold bg-black/50 backdrop-blur-md py-2 px-4 rounded-lg text-gray-200 mb-4 flex items-center">
+              <span className="w-2 h-2 bg-yellow-600 rounded mr-2"></span>
               Pending Tasks
             </h2>
             {tasksPending.length > 0 ? (
@@ -123,8 +123,8 @@ const Dashboard = () => {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-              <span className="w-2 h-6 bg-green-500 rounded mr-2"></span>
+            <h2 className="text-xl w-fit font-semibold bg-black/50 backdrop-blur-md py-2 px-4 rounded-lg text-gray-200 mb-4 flex items-center">
+              <span className="w-2 h-2 bg-green-500 rounded mr-2"></span>
               Completed Tasks
             </h2>
             {completedTasks.length > 0 ? (
