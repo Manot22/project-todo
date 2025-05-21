@@ -26,7 +26,6 @@ export const createTag = (data, callback) => {
   axios
     .post("http://localhost:9000/api/v1/tag", data)
     .then((res) => {
-      console.log(res.data);
       callback(true, res.data.data);
     })
     .catch((error) => {
